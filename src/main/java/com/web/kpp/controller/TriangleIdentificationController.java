@@ -3,7 +3,6 @@ package com.web.kpp.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import com.web.kpp.entity.Triangle;
 import com.web.kpp.service.TriangleIdentificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +19,7 @@ public class TriangleIdentificationController {
             @RequestParam(name="side2", defaultValue = "0") int side2,
             @RequestParam(name="side3", defaultValue = "0") int side3
     ) {
-        Triangle triangle = triangleIdentificationService.getTriangle(side1, side2, side3);
-
-        return new ResponseEntity<>(triangle, HttpStatus.OK);
+        return new ResponseEntity<>(triangleIdentificationService.identificate(side1, side2, side3), HttpStatus.OK);
     }
 
 }
