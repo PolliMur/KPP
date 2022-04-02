@@ -9,21 +9,21 @@ import java.util.Map;
 
 @Repository
 public class TriangleInMemoryCache {
-    Map<Triangle, TriangleIdentification> triangleCache = new LinkedHashMap<>();
+  Map<Triangle, TriangleIdentification> triangleCache = new LinkedHashMap<>();
 
-    public boolean findByKey(Triangle key) {
-        return triangleCache.containsKey(key);
-    }
+  public boolean findByKey(Triangle key) {
+    return triangleCache.containsKey(key);
+  }
 
-    public void putToMap(Triangle triangle, TriangleIdentification triangleIdentification) {
-        triangleCache.put(triangle, triangleIdentification);
-    }
+  public void putToMap(Triangle triangle, TriangleIdentification triangleIdentification) {
+    triangleCache.put(triangle, triangleIdentification);
+  }
 
-    public TriangleIdentification getParameters(Triangle key) {
-        return triangleCache.get(key);
-    }
+  public TriangleIdentification getParameters(Triangle key) {
+    return triangleCache.get(key);
+  }
 
-    public Map<Triangle, TriangleIdentification> getTriangleCache() {
-        return triangleCache;
-    }
+  public Map<Triangle, TriangleIdentification> getTriangleCache() {
+    return triangleCache;
+  }
 }

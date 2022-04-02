@@ -24,146 +24,113 @@ import java.util.List;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Logger logger = LogManager.getLogger(RestExceptionHandler.class);
+  private static final Logger logger = LogManager.getLogger(RestExceptionHandler.class);
 
-    private void logError(ExceptionInfo error) {
-        logger.error("\n\nStatus: "
-                + error.getErrorCode() + ".\nMessage"
-                + error.getMessage() + ".\nAll Errors: "
-                + error.getErrors() + "\n\n"
-        );
+  private void logError(ExceptionInfo error) {
+    logger.error(
+        "\n\nStatus: "
+            + error.getErrorCode()
+            + ".\nMessage"
+            + error.getMessage()
+            + ".\nAll Errors: "
+            + error.getErrors()
+            + "\n\n");
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException exception,
+      HttpHeaders headers,
+      HttpStatus status,
+      WebRequest request) {
+    List<String> errors = new ArrayList<>();
+
+    for (FieldError error : exception.getBindingResult().getFieldErrors()) {
+      errors.add(error.getField() + ": " + error.getDefaultMessage());
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException exception,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request
-    ) {
-        List<String> errors = new ArrayList<>();
-
-        for (FieldError error : exception.getBindingResult().getFieldErrors()) {
-            errors.add(error.getField() + ": " + error.getDefaultMessage());
-        }
-
-        for (ObjectError error : exception.getBindingResult().getGlobalErrors()) {
-            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
-        }
-
-        ExceptionInfo validationError = new ExceptionInfo(
-                HttpStatus.BAD_REQUEST,
-                exception.getLocalizedMessage(),
-                errors
-        );
-
-        logError(validationError);
-
-        return handleExceptionInternal(
-                exception,
-                validationError,
-                headers,
-                validationError.getErrorCode(),
-                request
-        );
+    for (ObjectError error : exception.getBindingResult().getGlobalErrors()) {
+      errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException exception,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request
-    ) {
+    ExceptionInfo validationError =
+        new ExceptionInfo(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errors);
 
-        List<String> errors = new ArrayList<>();
+    logError(validationError);
 
-        errors.add(exception.getParameterName() + " parameter is missing!");
+    return handleExceptionInternal(
+        exception, validationError, headers, validationError.getErrorCode(), request);
+  }
 
-        ExceptionInfo paramNotProvidedError = new ExceptionInfo(
-                HttpStatus.BAD_REQUEST,
-                exception.getLocalizedMessage(),
-                errors
-        );
+  @Override
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(
+      MissingServletRequestParameterException exception,
+      HttpHeaders headers,
+      HttpStatus status,
+      WebRequest request) {
 
-        logError(paramNotProvidedError);
+    List<String> errors = new ArrayList<>();
 
-        return new ResponseEntity<Object>(
-                paramNotProvidedError,
-                new HttpHeaders(),
-                paramNotProvidedError.getErrorCode()
-        );
+    errors.add(exception.getParameterName() + " parameter is missing!");
+
+    ExceptionInfo paramNotProvidedError =
+        new ExceptionInfo(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errors);
+
+    logError(paramNotProvidedError);
+
+    return new ResponseEntity<Object>(
+        paramNotProvidedError, new HttpHeaders(), paramNotProvidedError.getErrorCode());
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException exception) {
+    List<String> errors = new ArrayList<>();
+
+    for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
+      errors.add(
+          violation.getRootBeanClass().getName()
+              + " "
+              + violation.getPropertyPath()
+              + ": "
+              + violation.getMessage());
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolation(
-            ConstraintViolationException exception
-    ) {
-        List<String> errors = new ArrayList<>();
+    ExceptionInfo constrViolationError =
+        new ExceptionInfo(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errors);
 
-        for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
-            errors.add(violation.getRootBeanClass().getName() + " "
-                    + violation.getPropertyPath() + ": "
-                    + violation.getMessage());
-        }
+    logError(constrViolationError);
 
-        ExceptionInfo constrViolationError = new ExceptionInfo(
-                HttpStatus.BAD_REQUEST,
-                exception.getLocalizedMessage(),
-                errors
-        );
+    return new ResponseEntity<Object>(
+        constrViolationError, new HttpHeaders(), constrViolationError.getErrorCode());
+  }
 
-        logError(constrViolationError);
+  @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+  public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+      MethodArgumentTypeMismatchException exception, WebRequest request) {
+    List<String> errors = new ArrayList<>();
 
-        return new ResponseEntity<Object>(
-                constrViolationError,
-                new HttpHeaders(),
-                constrViolationError.getErrorCode()
-        );
-    }
+    errors.add(exception.getName() + " should be of type " + exception.getRequiredType().getName());
 
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
-            MethodArgumentTypeMismatchException exception,
-            WebRequest request
-    ) {
-        List<String> errors = new ArrayList<>();
+    ExceptionInfo typeError =
+        new ExceptionInfo(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errors);
 
-        errors.add(exception.getName() + " should be of type " + exception.getRequiredType().getName());
+    logError(typeError);
 
-        ExceptionInfo typeError = new ExceptionInfo(
-                HttpStatus.BAD_REQUEST,
-                exception.getLocalizedMessage(),
-                errors
-        );
+    return new ResponseEntity<Object>(typeError, new HttpHeaders(), typeError.getErrorCode());
+  }
 
-        logError(typeError);
+  @ExceptionHandler({Exception.class})
+  public ResponseEntity<Object> handleAll(Exception exception, WebRequest request) {
+    List<String> errors = new ArrayList<>();
 
-        return new ResponseEntity<Object>(
-                typeError,
-                new HttpHeaders(),
-                typeError.getErrorCode()
-        );
-    }
+    errors.add("Something went wrong!");
 
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> handleAll(Exception exception, WebRequest request) {
-        List<String> errors = new ArrayList<>();
+    ExceptionInfo error =
+        new ExceptionInfo(
+            HttpStatus.INTERNAL_SERVER_ERROR, exception.getLocalizedMessage(), errors);
 
-        errors.add("Something went wrong!");
+    logError(error);
 
-        ExceptionInfo error = new ExceptionInfo(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                exception.getLocalizedMessage(),
-                errors
-        );
-
-        logError(error);
-
-        return new ResponseEntity<Object>(
-                error,
-                new HttpHeaders(),
-                error.getErrorCode()
-        );
-    }
+    return new ResponseEntity<Object>(error, new HttpHeaders(), error.getErrorCode());
+  }
 }

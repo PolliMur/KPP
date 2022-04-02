@@ -20,28 +20,26 @@ import java.util.Map;
 @RestController
 @Validated
 public class TriangleIdentificationController {
-    @Autowired
-    private TriangleIdentificationService triangleIdentificationService;
+  @Autowired private TriangleIdentificationService triangleIdentificationService;
 
-    private static final Logger logger = LogManager.getLogger(ResponseEntityExceptionHandler.class);
+  private static final Logger logger = LogManager.getLogger(ResponseEntityExceptionHandler.class);
 
-    @GetMapping("/identification")
-    public ResponseEntity<Object> triangleParams(
-            @RequestParam(name = "side1", required = true) @Positive(message = "Value must be positive!") int side1,
-            @RequestParam(name = "side2", required = true) @Positive(message = "Value must be positive!") int side2,
-            @RequestParam(name = "side3", required = true) @Positive(message = "Value must be positive!") int side3
-    ) {
-        logger.info("GET /identification");
+  @GetMapping("/identification")
+  public ResponseEntity<Object> triangleParams(
+      @RequestParam(name = "side1", required = true) @Positive(message = "Value must be positive!")
+          int side1,
+      @RequestParam(name = "side2", required = true) @Positive(message = "Value must be positive!")
+          int side2,
+      @RequestParam(name = "side3", required = true) @Positive(message = "Value must be positive!")
+          int side3) {
+    logger.info("GET /identification");
 
-        return ResponseEntity.ok(
-                triangleIdentificationService.identify(side1, side2, side3)
-        );
-    }
+    return ResponseEntity.ok(triangleIdentificationService.identify(side1, side2, side3));
+  }
 
-    @GetMapping("/cache")
-    public Map<Triangle, TriangleIdentification> getCache() {
-        logger.info("GET /cache");
-        return triangleIdentificationService.getCache();
-    }
-
+  @GetMapping("/cache")
+  public Map<Triangle, TriangleIdentification> getCache() {
+    logger.info("GET /cache");
+    return triangleIdentificationService.getCache();
+  }
 }

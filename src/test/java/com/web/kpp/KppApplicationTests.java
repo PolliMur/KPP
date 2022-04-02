@@ -31,82 +31,97 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class KppApplicationTests {
-    @Autowired
-    private TriangleIdentificationService triangleIdentificationService;
+  @Autowired private TriangleIdentificationService triangleIdentificationService;
 
-    @Autowired
-    private WebApplicationContext context;
+  @Autowired private WebApplicationContext context;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    @Before
-    public void setUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
-    }
+  @Before
+  public void setUp() {
+    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
+  }
 
-    @Test
-    public void givenWac_whenServletContext_thenItProvidesGreetController() {
-        ServletContext servletContext = context.getServletContext();
+  @Test
+  public void givenWac_whenServletContext_thenItProvidesGreetController() {
+    ServletContext servletContext = context.getServletContext();
 
-        Assert.assertNotNull(servletContext);
-        Assert.assertTrue(servletContext instanceof MockServletContext);
-        Assert.assertNotNull(context.getBean("triangleIdentificationController"));
-    }
+    Assert.assertNotNull(servletContext);
+    Assert.assertTrue(servletContext instanceof MockServletContext);
+    Assert.assertNotNull(context.getBean("triangleIdentificationController"));
+  }
 
-    @Test
-    public void triangleIdentification_successfulResult_correctRequest() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/identification/?side1=3&side2=4&side3=5")).
-                andDo(print()).andExpect(status().isOk()).
-                andExpect(jsonPath("$.isRectangular").value(true)).
-                andExpect(jsonPath("$.isEquilateral").value(false)).
-                andExpect(jsonPath("$.isIsosceles").value(false)).andReturn();
+  @Test
+  public void triangleIdentification_successfulResult_correctRequest() throws Exception {
+    MvcResult mvcResult =
+        this.mockMvc
+            .perform(get("/identification/?side1=3&side2=4&side3=5"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isRectangular").value(true))
+            .andExpect(jsonPath("$.isEquilateral").value(false))
+            .andExpect(jsonPath("$.isIsosceles").value(false))
+            .andReturn();
 
-        Assert.assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
-    }
+    Assert.assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
+  }
 
-    @Test
-    public void triangleIdentification_badRequest_wrongParamName() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/identification/?wrongName=3&side2=4&side3=5")).
-                andDo(print()).andExpect(status().isBadRequest()).
-                andExpect(jsonPath("$.message").value("Required request parameter 'side1' for method parameter type int is not present")).andReturn();
+  @Test
+  public void triangleIdentification_badRequest_wrongParamName() throws Exception {
+    MvcResult mvcResult =
+        this.mockMvc
+            .perform(get("/identification/?wrongName=3&side2=4&side3=5"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(
+                jsonPath("$.message")
+                    .value(
+                        "Required request parameter 'side1' for method parameter type int is not present"))
+            .andReturn();
 
-        Assert.assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus());
-    }
+    Assert.assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus());
+  }
 
-    @Test
-    public void triangleIdentification_badRequest_negativeNumber() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/identification/?side1=-3&side2=4&side3=5")).
-                andDo(print()).andExpect(status().isBadRequest()).
-                andExpect(jsonPath("$.message").value("triangleParams.side1: Value must be positive!")).andReturn();
+  @Test
+  public void triangleIdentification_badRequest_negativeNumber() throws Exception {
+    MvcResult mvcResult =
+        this.mockMvc
+            .perform(get("/identification/?side1=-3&side2=4&side3=5"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("triangleParams.side1: Value must be positive!"))
+            .andReturn();
 
-        Assert.assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus());
-    }
+    Assert.assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus());
+  }
 
-    @Test
-    public void triangleIdentification_successfulResult_correctRequest_2() {
-        int side1 = 3;
-        int side2 = 4;
-        int side3 = 5;
+  @Test
+  public void triangleIdentification_successfulResult_correctRequest_2() {
+    int side1 = 3;
+    int side2 = 4;
+    int side3 = 5;
 
-        TriangleIdentification actual = triangleIdentificationService.identify(side1, side2, side3);
-        assertTrue(actual.getIsRectangular());
-        assertFalse(actual.getIsEquilateral());
-        assertFalse(actual.getIsIsosceles());
-    }
+    TriangleIdentification actual = triangleIdentificationService.identify(side1, side2, side3);
+    assertTrue(actual.getIsRectangular());
+    assertFalse(actual.getIsEquilateral());
+    assertFalse(actual.getIsIsosceles());
+  }
 
-    @Test
-    public void triangleIdentification_badRequest_triangleDoesNotExist() throws Exception {
-        int side1 = 100;
-        int side2 = 4;
-        int side3 = 5;
-        TriangleDoesNotExistException thrown = assertThrows(TriangleDoesNotExistException.class, () -> {
-            triangleIdentificationService.identify(side1, side2, side3);
-        });
+  @Test
+  public void triangleIdentification_badRequest_triangleDoesNotExist() throws Exception {
+    int side1 = 100;
+    int side2 = 4;
+    int side3 = 5;
+    TriangleDoesNotExistException thrown =
+        assertThrows(
+            TriangleDoesNotExistException.class,
+            () -> {
+              triangleIdentificationService.identify(side1, side2, side3);
+            });
 
-        String expectedMessage = "Triangle does not exist!";
-        String actualMessage = thrown.getMessage();
+    String expectedMessage = "Triangle does not exist!";
+    String actualMessage = thrown.getMessage();
 
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
-
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
 }

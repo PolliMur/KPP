@@ -10,51 +10,46 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.Map;
 
-
 @Service
 public class TriangleIdentificationService {
-    private static final Logger logger = LogManager.getLogger(TriangleIdentificationService.class);
+  private static final Logger logger = LogManager.getLogger(TriangleIdentificationService.class);
 
-    @Autowired
-    private TriangleInMemoryCache hashMap;
+  @Autowired private TriangleInMemoryCache hashMap;
 
-    private void validateTriangle (int side1, int side2, int side3) {
-        if (
-                side1 + side2 <= side3 || side1 + side3 <= side2 || side2 + side3 <= side1
-        ) {
-            logger.error("Identify error! Wrong sides length.");
-            throw new TriangleDoesNotExistException("Triangle does not exist!");
-        }
+  private void validateTriangle(int side1, int side2, int side3) {
+    if (side1 + side2 <= side3 || side1 + side3 <= side2 || side2 + side3 <= side1) {
+      logger.error("Identify error! Wrong sides length.");
+      throw new TriangleDoesNotExistException("Triangle does not exist!");
+    }
+  }
+
+  public TriangleIdentification identify(int side1, int side2, int side3) {
+    Triangle triangle = new Triangle(side1, side2, side3);
+    if (hashMap.findByKey(triangle)) {
+      logger.info("get hashMap");
+      return hashMap.getParameters(triangle);
     }
 
-    public TriangleIdentification identify(int side1, int side2, int side3) {
-        Triangle triangle = new Triangle(side1, side2, side3);
-        if (hashMap.findByKey(triangle)) {
-            logger.info("get hashMap");
-            return hashMap.getParameters(triangle);
-        }
+    validateTriangle(side1, side2, side3);
 
-        validateTriangle(side1, side2, side3);
+    TriangleIdentification triangleIdentification = new TriangleIdentification();
 
-        TriangleIdentification triangleIdentification = new TriangleIdentification();
+    triangleIdentification.setIsEquilateral(side1 == side2 && side2 == side3);
+    triangleIdentification.setIsIsosceles(side1 == side2 || side2 == side3 || side1 == side3);
+    triangleIdentification.setIsRectangular(
+        Math.pow(side1, 2) == Math.pow(side2, 2) + Math.pow(side3, 2)
+            || Math.pow(side2, 2) == Math.pow(side1, 2) + Math.pow(side3, 2)
+            || Math.pow(side3, 2) == Math.pow(side1, 2) + Math.pow(side2, 2));
 
-        triangleIdentification.setIsEquilateral(side1 == side2 && side2 == side3);
-        triangleIdentification.setIsIsosceles(side1 == side2 || side2 == side3 || side1 == side3);
-        triangleIdentification.setIsRectangular(
-                Math.pow(side1, 2) == Math.pow(side2, 2) + Math.pow(side3, 2) ||
-                        Math.pow(side2, 2) == Math.pow(side1, 2) + Math.pow(side3, 2) ||
-                        Math.pow(side3, 2) == Math.pow(side1, 2) + Math.pow(side2, 2)
-        );
+    logger.info("Successful identify!");
 
-        logger.info("Successful identify!");
+    hashMap.putToMap(triangle, triangleIdentification);
+    logger.info("put to hashMap");
 
-        hashMap.putToMap(triangle, triangleIdentification);
-        logger.info("put to hashMap");
+    return triangleIdentification;
+  }
 
-        return triangleIdentification;
-    }
-
-    public Map<Triangle, TriangleIdentification> getCache() {
-        return hashMap.getTriangleCache();
-    }
+  public Map<Triangle, TriangleIdentification> getCache() {
+    return hashMap.getTriangleCache();
+  }
 }
