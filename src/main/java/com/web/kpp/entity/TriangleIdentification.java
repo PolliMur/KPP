@@ -8,33 +8,34 @@ public class TriangleIdentification {
     public TriangleIdentification() {
 
     }
+
     public TriangleIdentification(boolean isEquilateral, boolean isIsosceles, boolean isRectangular) {
         this.isEquilateral = isEquilateral;
         this.isIsosceles = isIsosceles;
         this.isRectangular = isRectangular;
     }
 
-    public boolean getIsEquilateral () {
+    public boolean getIsEquilateral() {
         return isEquilateral;
     }
 
-    public boolean getIsIsosceles () {
+    public boolean getIsIsosceles() {
         return isIsosceles;
     }
 
-    public boolean getIsRectangular () {
+    public boolean getIsRectangular() {
         return isRectangular;
     }
 
-    public void setIsEquilateral (boolean isEquilateral) {
+    public void setIsEquilateral(boolean isEquilateral) {
         this.isEquilateral = isEquilateral;
     }
 
-    public void setIsIsosceles (boolean isIsosceles) {
+    public void setIsIsosceles(boolean isIsosceles) {
         this.isIsosceles = isIsosceles;
     }
 
-    public void setIsRectangular (boolean isRectangular) {
+    public void setIsRectangular(boolean isRectangular) {
         this.isRectangular = isRectangular;
     }
 }
