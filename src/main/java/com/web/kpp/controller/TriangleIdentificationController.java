@@ -2,6 +2,7 @@ package com.web.kpp.controller;
 
 import com.web.kpp.entity.Triangle;
 import com.web.kpp.entity.TriangleIdentification;
+import com.web.kpp.service.CounterService;
 import com.web.kpp.service.TriangleIdentificationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

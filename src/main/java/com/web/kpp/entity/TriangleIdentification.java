@@ -4,6 +4,7 @@ public class TriangleIdentification {
   private boolean isEquilateral;
   private boolean isIsosceles;
   private boolean isRectangular;
+  private int counter;
 
   public TriangleIdentification() {}
 
@@ -25,6 +26,10 @@ public class TriangleIdentification {
     return isRectangular;
   }
 
+  public int getCounter() {
+    return counter;
+  }
+
   public void setIsEquilateral(boolean isEquilateral) {
     this.isEquilateral = isEquilateral;
   }
@@ -35,5 +40,9 @@ public class TriangleIdentification {
 
   public void setIsRectangular(boolean isRectangular) {
     this.isRectangular = isRectangular;
+  }
+
+  public void setCounter(int counter) {
+    this.counter = counter;
   }
 }
