@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Repository
 public class TriangleInMemoryCache {
-  Map<Triangle, TriangleIdentification> triangleCache = new LinkedHashMap<>();
+  private final Map<Triangle, TriangleIdentification> triangleCache = new LinkedHashMap<>();
 
   public boolean findByKey(Triangle key) {
     return triangleCache.containsKey(key);

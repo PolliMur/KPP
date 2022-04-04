@@ -18,9 +18,9 @@ public class Triangle {
     if (this == other) return true;
     if (other == null || getClass() != other.getClass()) return false;
     Triangle that = (Triangle) other;
-    return Integer.compare(that.side1, side1) == 0
-        && Integer.compare(that.side2, side2) == 0
-        && Integer.compare(that.side3, side3) == 0;
+    return that.side1 == side1
+        && that.side2 == side2
+        && that.side3 == side3;
   }
 
   @Override

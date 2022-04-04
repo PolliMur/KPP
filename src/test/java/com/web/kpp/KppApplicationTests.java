@@ -43,7 +43,7 @@ public class KppApplicationTests {
   }
 
   @Test
-  public void givenWac_whenServletContext_thenItProvidesGreetController() {
+  public void givenWac_whenServletContext_thenItProvidesController() {
     ServletContext servletContext = context.getServletContext();
 
     Assert.assertNotNull(servletContext);
@@ -108,7 +108,7 @@ public class KppApplicationTests {
   }
 
   @Test
-  public void triangleIdentification_badRequest_triangleDoesNotExist() throws Exception {
+  public void triangleIdentification_badRequest_triangleDoesNotExist() {
     int side1 = 100;
     int side2 = 4;
     int side3 = 5;
