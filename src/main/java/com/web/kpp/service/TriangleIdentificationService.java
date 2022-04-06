@@ -15,7 +15,7 @@ public class TriangleIdentificationService {
   private static final Logger logger = LogManager.getLogger(TriangleIdentificationService.class);
 
   @Autowired
-  private CounterService counterService = new CounterService();
+  private CounterService counterService;
 
   @Autowired
   private TriangleInMemoryCache hashMap;
