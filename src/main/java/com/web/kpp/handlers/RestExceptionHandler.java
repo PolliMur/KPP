@@ -30,7 +30,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     logger.error(
         "\n\nStatus: "
             + error.getErrorCode()
-            + ".\nMessage"
+            + ".\nMessage: "
             + error.getMessage()
             + ".\nAll Errors: "
             + error.getErrors()

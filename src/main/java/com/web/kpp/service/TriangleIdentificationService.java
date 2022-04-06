@@ -14,7 +14,11 @@ import java.util.Map;
 public class TriangleIdentificationService {
   private static final Logger logger = LogManager.getLogger(TriangleIdentificationService.class);
 
-  @Autowired private TriangleInMemoryCache hashMap;
+  @Autowired
+  private CounterService counterService;
+
+  @Autowired
+  private TriangleInMemoryCache hashMap;
 
   private void validateTriangle(int side1, int side2, int side3) {
     if (side1 + side2 <= side3 || side1 + side3 <= side2 || side2 + side3 <= side1) {
@@ -24,6 +28,7 @@ public class TriangleIdentificationService {
   }
 
   public TriangleIdentification identify(int side1, int side2, int side3) {
+    counterService.increment();
     Triangle triangle = new Triangle(side1, side2, side3);
     if (hashMap.findByKey(triangle)) {
       logger.info("get hashMap");
@@ -41,6 +46,7 @@ public class TriangleIdentificationService {
             || Math.pow(side2, 2) == Math.pow(side1, 2) + Math.pow(side3, 2)
             || Math.pow(side3, 2) == Math.pow(side1, 2) + Math.pow(side2, 2));
 
+    triangleIdentification.setCounter(counterService.increment());
     logger.info("Successful identify!");
 
     hashMap.putToMap(triangle, triangleIdentification);
