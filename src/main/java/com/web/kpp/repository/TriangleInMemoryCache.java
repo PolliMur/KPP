@@ -15,8 +15,9 @@ public class TriangleInMemoryCache {
     return triangleCache.containsKey(key);
   }
 
-  public void putToMap(Triangle triangle, TriangleIdentification triangleIdentification) {
+  public TriangleIdentification putToMap(Triangle triangle, TriangleIdentification triangleIdentification) {
     triangleCache.put(triangle, triangleIdentification);
+    return triangleIdentification;
   }
 
   public TriangleIdentification getParameters(Triangle key) {

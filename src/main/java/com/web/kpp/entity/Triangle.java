@@ -13,6 +13,22 @@ public class Triangle {
     this.side3 = side3;
   }
 
+  public int getSide1() {
+    return side1;
+  }
+
+  public int getSide2() {
+    return side2;
+  }
+
+  public int getSide3() {
+    return side3;
+  }
+
+  public Integer parseInt() {
+    return side1 + side2 + side3;
+  }
+
   @Override
   public boolean equals(Object other) {
     if (this == other) return true;

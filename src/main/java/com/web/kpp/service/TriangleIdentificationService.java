@@ -28,7 +28,6 @@ public class TriangleIdentificationService {
   }
 
   public TriangleIdentification identify(int side1, int side2, int side3) {
-    counterService.increment();
     Triangle triangle = new Triangle(side1, side2, side3);
     if (hashMap.findByKey(triangle)) {
       logger.info("get hashMap");
@@ -49,10 +48,8 @@ public class TriangleIdentificationService {
     triangleIdentification.setCounter(counterService.increment());
     logger.info("Successful identify!");
 
-    hashMap.putToMap(triangle, triangleIdentification);
     logger.info("put to hashMap");
-
-    return triangleIdentification;
+    return hashMap.putToMap(triangle, triangleIdentification);
   }
 
   public Map<Triangle, TriangleIdentification> getCache() {

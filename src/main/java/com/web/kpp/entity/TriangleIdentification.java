@@ -8,10 +8,11 @@ public class TriangleIdentification {
 
   public TriangleIdentification() {}
 
-  public TriangleIdentification(boolean isEquilateral, boolean isIsosceles, boolean isRectangular) {
+  public TriangleIdentification(boolean isEquilateral, boolean isIsosceles, boolean isRectangular, int counter) {
     this.isEquilateral = isEquilateral;
     this.isIsosceles = isIsosceles;
     this.isRectangular = isRectangular;
+    this.counter = counter;
   }
 
   public boolean getIsEquilateral() {
