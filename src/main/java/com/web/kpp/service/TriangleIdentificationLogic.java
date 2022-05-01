@@ -25,7 +25,7 @@ public class TriangleIdentificationLogic {
     }
 
     public Integer calculateSum(List<Triangle> resultList) {
-        Integer sum = 0;
+        Integer sum = null;
         if(!resultList.isEmpty()) {
             sum = resultList.stream().mapToInt(Triangle::parseInt).sum();
             logger.info("Successfully calculateSum!");
@@ -34,7 +34,7 @@ public class TriangleIdentificationLogic {
     }
 
     public Integer findMax(List<Triangle> resultList) {
-        Integer max = 0;
+        Integer max = null;
         if(!resultList.isEmpty()) {
             max = resultList.stream().mapToInt(Triangle::parseInt).max().getAsInt();
             logger.info("Successfully findMax!");
@@ -44,7 +44,7 @@ public class TriangleIdentificationLogic {
     }
 
     public Integer findMin(List<Triangle> resultList) {
-        Integer min = 0;
+        Integer min = null;
         if(!resultList.isEmpty()) {
             min = resultList.stream().mapToInt(Triangle::parseInt).min().getAsInt();
             logger.info("Successfully findMin!");

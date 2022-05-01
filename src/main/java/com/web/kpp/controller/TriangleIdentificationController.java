@@ -1,9 +1,8 @@
 package com.web.kpp.controller;
 
-import com.web.kpp.DTO.TriangleListDto;
+import com.web.kpp.dto.TriangleListDto;
 import com.web.kpp.entity.Triangle;
 import com.web.kpp.entity.TriangleIdentification;
-import com.web.kpp.service.CounterService;
 import com.web.kpp.service.TriangleIdentificationLogic;
 import com.web.kpp.service.TriangleIdentificationService;
 import org.apache.logging.log4j.LogManager;
@@ -52,9 +51,12 @@ public class TriangleIdentificationController {
     }
 
     @PostMapping("/triangleList")
-    public ResponseEntity <Object> calculateBulkParams(@Valid @RequestBody List<Triangle> bodyList) {
+    public ResponseEntity<Object> calculateBulkParams(@Valid @RequestBody List<Triangle> bodyList) {
         List<TriangleIdentification> resultList = new LinkedList<>();
-        bodyList.forEach((currentElement)->{
+        if (bodyList.isEmpty()) {
+            return ResponseEntity.ok(new TriangleListDto(null, null, null, null));
+        }
+        bodyList.forEach((currentElement) -> {
             try {
                 resultList.add(triangleIdentificationLogic.calculateResult(currentElement));
             } catch (IllegalArgumentException e) {
